@@ -81,7 +81,6 @@ export const postProducto = async( req: Request, res: Response ) =>
     const info = req.body;
     info.color = info.color.toLowerCase();
     info.talla = info.talla.toLowerCase();
-    info.marca = info.marca.toLowerCase();
     info.nombre = info.nombre.toLowerCase();
     info.genero = info.genero.toLowerCase();
     info.descripcion = info.descripcion.toLowerCase();
@@ -115,11 +114,6 @@ export const putProducto = async( req: Request, res: Response ) =>
     if ( info.talla )
     {
         info.talla = info.talla.toLowerCase();
-    }
-
-    if ( info.marca )
-    {
-        info.marca = info.marca.toLowerCase();
     }
 
     if ( info.nombre )

@@ -28,14 +28,6 @@ var Producto = connection_1.default.define('Producto', {
             }
         }
     },
-    marca: {
-        type: sequelize_1.DataTypes.STRING,
-        validate: {
-            notEmpty: {
-                msg: 'El color del producto es obligatorio.'
-            }
-        }
-    },
     nombre: {
         type: sequelize_1.DataTypes.STRING,
         validate: {

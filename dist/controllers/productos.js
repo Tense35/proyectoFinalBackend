@@ -141,7 +141,6 @@ var postProducto = function (req, res) { return __awaiter(void 0, void 0, void 0
                 info = req.body;
                 info.color = info.color.toLowerCase();
                 info.talla = info.talla.toLowerCase();
-                info.marca = info.marca.toLowerCase();
                 info.nombre = info.nombre.toLowerCase();
                 info.genero = info.genero.toLowerCase();
                 info.descripcion = info.descripcion.toLowerCase();
@@ -177,9 +176,6 @@ var putProducto = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 }
                 if (info.talla) {
                     info.talla = info.talla.toLowerCase();
-                }
-                if (info.marca) {
-                    info.marca = info.marca.toLowerCase();
                 }
                 if (info.nombre) {
                     info.nombre = info.nombre.toLowerCase();

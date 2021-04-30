@@ -32,17 +32,6 @@ const Producto = db.define('Producto',
             }
         }
     },
-    marca: 
-    {
-        type: DataTypes.STRING,
-        validate:
-        {
-            notEmpty: 
-            {
-                msg:'El color del producto es obligatorio.'
-            }
-        }
-    },
     nombre: 
     {
         type: DataTypes.STRING,
