@@ -2,9 +2,12 @@
 import express, { Application } from "express";
 import cors from "cors";
 
-// propios
+// Propios
 import db from "../db/connection";
 
+import categoriasRoutes from '../routes/categorias';
+import clientesRoutes from '../routes/clientes';
+import productosRoutes from '../routes/productos';
 import usuariosRoutes from '../routes/usuarios';
 
 
@@ -19,10 +22,10 @@ class Server
     private paths =
     {
         usuarios: '/api/usuarios',
-        categorias: 'api/categorias',
-        clientes: 'api/clientes',
-        ventas: 'api/ventas',
-        producto: 'api/producto'
+        categorias: '/api/categorias',
+        clientes: '/api/clientes',
+        ventas: '/api/ventas',
+        productos: '/api/productos'
     };
 
     constructor()
@@ -33,10 +36,7 @@ class Server
         this.dbConnection();
         this.middlewares();
         this.routes();
-
     }
-
-    
 
     // Establecer conexión con la base de datos
     async dbConnection()
@@ -67,9 +67,11 @@ class Server
     // Definición de rutas
     routes()
     {
+        this.app.use( this.paths.categorias, categoriasRoutes);
+        this.app.use( this.paths.clientes, clientesRoutes);
+        this.app.use( this.paths.productos, productosRoutes);
         this.app.use( this.paths.usuarios, usuariosRoutes );
     }
-
 
     // Levantar el servidor
     listen(): void

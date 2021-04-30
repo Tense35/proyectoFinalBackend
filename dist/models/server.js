@@ -42,18 +42,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Terceros
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
-// propios
+// Propios
 var connection_1 = __importDefault(require("../db/connection"));
+var categorias_1 = __importDefault(require("../routes/categorias"));
+var clientes_1 = __importDefault(require("../routes/clientes"));
+var productos_1 = __importDefault(require("../routes/productos"));
 var usuarios_1 = __importDefault(require("../routes/usuarios"));
 var Server = /** @class */ (function () {
     function Server() {
         // Definición de endpoints
         this.paths = {
             usuarios: '/api/usuarios',
-            categorias: 'api/categorias',
-            clientes: 'api/clientes',
-            ventas: 'api/ventas',
-            producto: 'api/producto'
+            categorias: '/api/categorias',
+            clientes: '/api/clientes',
+            ventas: '/api/ventas',
+            productos: '/api/productos'
         };
         this.app = express_1.default();
         this.port = process.env.PORT || '8081';
@@ -93,6 +96,9 @@ var Server = /** @class */ (function () {
     };
     // Definición de rutas
     Server.prototype.routes = function () {
+        this.app.use(this.paths.categorias, categorias_1.default);
+        this.app.use(this.paths.clientes, clientes_1.default);
+        this.app.use(this.paths.productos, productos_1.default);
         this.app.use(this.paths.usuarios, usuarios_1.default);
     };
     // Levantar el servidor

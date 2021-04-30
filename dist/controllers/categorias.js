@@ -35,13 +35,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = void 0;
+exports.deleteCategoria = exports.putCategoria = exports.postCategoria = exports.getCategoria = exports.getCategorias = void 0;
 // Propios
-var usuario_1 = __importDefault(require("../models/usuario"));
+var categoria_1 = __importDefault(require("../models/categoria"));
 // Función para errores
 var sendError = function (error, res, area) {
     console.log('------------------------------------------');
@@ -50,11 +61,11 @@ var sendError = function (error, res, area) {
     console.log(error);
     res.status(500).json({
         ok: false,
-        msg: 'Avisar al administrador del backend - categorias/controller'
+        msg: 'Avisar al administrador del backend - usuarios/controller'
     });
 };
-// Obtener todos los usuarios de la base de datos
-var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+// Obtener todas las categorias de la base de datos
+var getCategorias = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, estado, data, _b, error_1;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -65,11 +76,11 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 1:
                 _c.trys.push([1, 6, , 7]);
                 if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true } })];
+                return [4 /*yield*/, categoria_1.default.findAll({ where: { estado: true } })];
             case 2:
                 _b = _c.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findAll()];
+            case 3: return [4 /*yield*/, categoria_1.default.findAll()];
             case 4:
                 _b = _c.sent();
                 _c.label = 5;
@@ -82,32 +93,31 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [3 /*break*/, 7];
             case 6:
                 error_1 = _c.sent();
-                sendError(error_1, res, 'getUsuarios');
+                sendError(error_1, res, 'getCategorias');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuarios = getUsuarios;
-// Obtener un usuario específico de la base de datos
-var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, email, data, _b, error_2;
+exports.getCategorias = getCategorias;
+// Obtener una categoria específica de la base de datos
+var getCategoria = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, estado, id_categoria, data, _b, error_2;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _a = req.query.estado, estado = _a === void 0 ? 1 : _a;
-                email = req.params.email;
-                email = email.toLowerCase();
+                id_categoria = req.params.id_categoria;
                 estado = (estado === 'false') ? 0 : 1;
                 _c.label = 1;
             case 1:
                 _c.trys.push([1, 6, , 7]);
                 if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findOne({ where: { email: email, estado: 1 } })];
+                return [4 /*yield*/, categoria_1.default.findOne({ where: { id_categoria: id_categoria, estado: 1 } })];
             case 2:
                 _b = _c.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 3: return [4 /*yield*/, categoria_1.default.findByPk(id_categoria)];
             case 4:
                 _b = _c.sent();
                 _c.label = 5;
@@ -116,7 +126,7 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!data) {
                     return [2 /*return*/, res.status(404).json({
                             ok: true,
-                            data: 'No se encontró el usuario, probablemente fue eliminado.'
+                            data: 'No se encontró la categoría, probablemente fue eliminado.'
                         })];
                 }
                 res.json({
@@ -126,67 +136,64 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 7];
             case 6:
                 error_2 = _c.sent();
-                sendError(error_2, res, 'getUsuario');
+                sendError(error_2, res, 'getCategoria');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuario = getUsuario;
-var postUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var info, data, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+exports.getCategoria = getCategoria;
+var postCategoria = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, id_categoria, info, data, error_3;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                info = req.body;
-                info.email = info.email.toLowerCase();
+                _a = req.body, id_categoria = _a.id_categoria, info = __rest(_a, ["id_categoria"]);
                 info.nombre = info.nombre.toLowerCase();
-                _a.label = 1;
+                if (info.descripcion) {
+                    info.descripcion = info.descripcion.toLowerCase();
+                }
+                _b.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, usuario_1.default.create(info)];
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, categoria_1.default.create(info)];
             case 2:
-                data = _a.sent();
+                data = _b.sent();
                 res.json({
                     ok: true,
                     data: data
                 });
                 return [3 /*break*/, 4];
             case 3:
-                error_3 = _a.sent();
-                sendError(error_3, res, 'postUsuario');
+                error_3 = _b.sent();
+                sendError(error_3, res, 'postCategoria');
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.postUsuario = postUsuario;
-var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, info, usuario, data, _a, error_4;
+exports.postCategoria = postCategoria;
+var putCategoria = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id_categoria, info, categoria, data, _a, error_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                email = req.params.email;
+                id_categoria = req.params.id_categoria;
                 info = req.body;
                 if (info.nombre) {
                     info.nombre = info.nombre.toLowerCase();
                 }
-                if (info.password) {
-                    if (info.password.length < 5) {
-                        return [2 /*return*/, res.status(400).json({
-                                ok: false,
-                                msg: 'El password debe de tener 5 o más caracteres'
-                            })];
-                    }
+                if (info.descripcion) {
+                    info.descripcion = info.descripcion.toLowerCase();
                 }
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                return [4 /*yield*/, categoria_1.default.findByPk(id_categoria)];
             case 2:
-                usuario = _b.sent();
-                if (!(usuario)) return [3 /*break*/, 4];
-                return [4 /*yield*/, usuario.update(info)];
+                categoria = _b.sent();
+                if (!(categoria)) return [3 /*break*/, 4];
+                return [4 /*yield*/, categoria.update(info)];
             case 3:
                 _a = _b.sent();
                 return [3 /*break*/, 5];
@@ -202,27 +209,27 @@ var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 7];
             case 6:
                 error_4 = _b.sent();
-                sendError(error_4, res, 'putUsuario');
+                sendError(error_4, res, 'putCategoria');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.putUsuario = putUsuario;
-var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, usuario, data, _a, error_5;
+exports.putCategoria = putCategoria;
+var deleteCategoria = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id_categoria, categoria, data, _a, error_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                email = req.params.email;
+                id_categoria = req.params.id_categoria;
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                return [4 /*yield*/, categoria_1.default.findByPk(id_categoria)];
             case 2:
-                usuario = _b.sent();
-                if (!(usuario)) return [3 /*break*/, 4];
-                return [4 /*yield*/, usuario.update({ estado: 0 })];
+                categoria = _b.sent();
+                if (!(categoria)) return [3 /*break*/, 4];
+                return [4 /*yield*/, categoria.update({ estado: 0 })];
             case 3:
                 _a = _b.sent();
                 return [3 /*break*/, 5];
@@ -238,11 +245,11 @@ var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 7];
             case 6:
                 error_5 = _b.sent();
-                sendError(error_5, res, 'deleteUsuario');
+                sendError(error_5, res, 'deleteCategoria');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.deleteUsuario = deleteUsuario;
-//# sourceMappingURL=usuarios.js.map
+exports.deleteCategoria = deleteCategoria;
+//# sourceMappingURL=categorias.js.map

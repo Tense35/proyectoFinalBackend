@@ -15,7 +15,7 @@ const sendError = ( error: Error, res: Response, area:string ) =>
     res.status(500).json
     ({
         ok: false,
-        msg: 'Avisar al administrador del backend - usuarios/controller'
+        msg: 'Avisar al administrador del backend - categorias/controller'
     });
 }
 
@@ -72,7 +72,7 @@ export const getUsuario = async( req: Request, res: Response ) =>
     } 
     catch (error) 
     {
-        sendError(error, res, 'getUsuarios' );
+        sendError(error, res, 'getUsuario' );
     }
 }
 
@@ -108,11 +108,6 @@ export const putUsuario = async( req: Request, res: Response ) =>
         info.nombre = info.nombre.toLowerCase();
     }
 
-    if ( info.email )
-    {
-        info.email = info.email.toLowerCase();
-    }
-
     if ( info.password )
     {
         if ( info.password.length < 5)
@@ -139,7 +134,7 @@ export const putUsuario = async( req: Request, res: Response ) =>
     } 
     catch (error) 
     {
-        sendError(error, res, 'postUsuario' );
+        sendError(error, res, 'putUsuario' );
     }
 }
 
@@ -161,6 +156,6 @@ export const deleteUsuario = async( req: Request, res: Response ) =>
     } 
     catch (error) 
     {
-        sendError(error, res, 'postUsuario' );
+        sendError(error, res, 'deleteUsuario' );
     }
 }

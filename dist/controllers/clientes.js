@@ -39,22 +39,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = void 0;
+exports.deleteCliente = exports.putCliente = exports.postCliente = exports.getCliente = exports.getClientes = void 0;
 // Propios
-var usuario_1 = __importDefault(require("../models/usuario"));
+var cliente_1 = __importDefault(require("../models/cliente"));
 // Función para errores
 var sendError = function (error, res, area) {
     console.log('------------------------------------------');
-    console.log("Error usuarios/controller, " + area);
+    console.log("Error clientes/controller, " + area);
     console.log('------------------------------------------');
     console.log(error);
     res.status(500).json({
         ok: false,
-        msg: 'Avisar al administrador del backend - categorias/controller'
+        msg: 'Avisar al administrador del backend - clientes/controller'
     });
 };
-// Obtener todos los usuarios de la base de datos
-var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+// Obtener todos los clientes de la base de datos
+var getClientes = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, estado, data, _b, error_1;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -65,11 +65,11 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 1:
                 _c.trys.push([1, 6, , 7]);
                 if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true } })];
+                return [4 /*yield*/, cliente_1.default.findAll({ where: { estado: true } })];
             case 2:
                 _b = _c.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findAll()];
+            case 3: return [4 /*yield*/, cliente_1.default.findAll()];
             case 4:
                 _b = _c.sent();
                 _c.label = 5;
@@ -82,32 +82,32 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [3 /*break*/, 7];
             case 6:
                 error_1 = _c.sent();
-                sendError(error_1, res, 'getUsuarios');
+                sendError(error_1, res, 'getClientes');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuarios = getUsuarios;
-// Obtener un usuario específico de la base de datos
-var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, email, data, _b, error_2;
+exports.getClientes = getClientes;
+// Obtener un cliente específico de la base de datos
+var getCliente = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, estado, id_cliente, data, _b, error_2;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _a = req.query.estado, estado = _a === void 0 ? 1 : _a;
-                email = req.params.email;
-                email = email.toLowerCase();
+                id_cliente = req.params.id_cliente;
+                id_cliente = id_cliente.toLowerCase();
                 estado = (estado === 'false') ? 0 : 1;
                 _c.label = 1;
             case 1:
                 _c.trys.push([1, 6, , 7]);
                 if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findOne({ where: { email: email, estado: 1 } })];
+                return [4 /*yield*/, cliente_1.default.findOne({ where: { id_cliente: id_cliente, estado: 1 } })];
             case 2:
                 _b = _c.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 3: return [4 /*yield*/, cliente_1.default.findByPk(id_cliente)];
             case 4:
                 _b = _c.sent();
                 _c.label = 5;
@@ -116,7 +116,7 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!data) {
                     return [2 /*return*/, res.status(404).json({
                             ok: true,
-                            data: 'No se encontró el usuario, probablemente fue eliminado.'
+                            data: 'No se encontró el cliente, probablemente fue eliminado.'
                         })];
                 }
                 res.json({
@@ -126,67 +126,86 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 7];
             case 6:
                 error_2 = _c.sent();
-                sendError(error_2, res, 'getUsuario');
+                sendError(error_2, res, 'getCliente');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuario = getUsuario;
-var postUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var info, data, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+exports.getCliente = getCliente;
+var postCliente = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var info, cliente, data_1, _a, data, error_3;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 info = req.body;
-                info.email = info.email.toLowerCase();
                 info.nombre = info.nombre.toLowerCase();
-                _a.label = 1;
+                info.tipo_id = info.tipo_id.toLowerCase();
+                info.email = info.email.toLowerCase();
+                _b.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, usuario_1.default.create(info)];
+                _b.trys.push([1, 8, , 9]);
+                return [4 /*yield*/, cliente_1.default.findByPk(info.id_cliente)];
             case 2:
-                data = _a.sent();
+                cliente = _b.sent();
+                if (!cliente) return [3 /*break*/, 6];
+                info.estado = true;
+                if (!(cliente)) return [3 /*break*/, 4];
+                return [4 /*yield*/, cliente.update(info)];
+            case 3:
+                _a = _b.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                _a = null;
+                _b.label = 5;
+            case 5:
+                data_1 = _a;
+                return [2 /*return*/, res.json({
+                        ok: true,
+                        msg: 'Se ha actualizado la información del cliente',
+                        data: data_1
+                    })];
+            case 6: return [4 /*yield*/, cliente_1.default.create(info)];
+            case 7:
+                data = _b.sent();
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 4];
-            case 3:
-                error_3 = _a.sent();
-                sendError(error_3, res, 'postUsuario');
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 9];
+            case 8:
+                error_3 = _b.sent();
+                sendError(error_3, res, 'postCliente');
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); };
-exports.postUsuario = postUsuario;
-var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, info, usuario, data, _a, error_4;
+exports.postCliente = postCliente;
+var putCliente = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id_cliente, info, cliente, data, _a, error_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                email = req.params.email;
+                id_cliente = req.params.id_cliente;
                 info = req.body;
+                if (info.email) {
+                    info.email = info.email.toLowerCase();
+                }
+                if (info.tipo_id) {
+                    info.tipo_id = info.tipo_id.toLowerCase();
+                }
                 if (info.nombre) {
                     info.nombre = info.nombre.toLowerCase();
-                }
-                if (info.password) {
-                    if (info.password.length < 5) {
-                        return [2 /*return*/, res.status(400).json({
-                                ok: false,
-                                msg: 'El password debe de tener 5 o más caracteres'
-                            })];
-                    }
                 }
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                return [4 /*yield*/, cliente_1.default.findByPk(id_cliente)];
             case 2:
-                usuario = _b.sent();
-                if (!(usuario)) return [3 /*break*/, 4];
-                return [4 /*yield*/, usuario.update(info)];
+                cliente = _b.sent();
+                if (!(cliente)) return [3 /*break*/, 4];
+                return [4 /*yield*/, cliente.update(info)];
             case 3:
                 _a = _b.sent();
                 return [3 /*break*/, 5];
@@ -202,27 +221,27 @@ var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 7];
             case 6:
                 error_4 = _b.sent();
-                sendError(error_4, res, 'putUsuario');
+                sendError(error_4, res, 'putCliente');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.putUsuario = putUsuario;
-var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, usuario, data, _a, error_5;
+exports.putCliente = putCliente;
+var deleteCliente = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id_cliente, cliente, data, _a, error_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                email = req.params.email;
+                id_cliente = req.params.id_cliente;
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                return [4 /*yield*/, cliente_1.default.findByPk(id_cliente)];
             case 2:
-                usuario = _b.sent();
-                if (!(usuario)) return [3 /*break*/, 4];
-                return [4 /*yield*/, usuario.update({ estado: 0 })];
+                cliente = _b.sent();
+                if (!(cliente)) return [3 /*break*/, 4];
+                return [4 /*yield*/, cliente.update({ estado: 0 })];
             case 3:
                 _a = _b.sent();
                 return [3 /*break*/, 5];
@@ -238,11 +257,11 @@ var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 7];
             case 6:
                 error_5 = _b.sent();
-                sendError(error_5, res, 'deleteUsuario');
+                sendError(error_5, res, 'deleteCliente');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.deleteUsuario = deleteUsuario;
-//# sourceMappingURL=usuarios.js.map
+exports.deleteCliente = deleteCliente;
+//# sourceMappingURL=clientes.js.map

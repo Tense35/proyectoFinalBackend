@@ -52,19 +52,4 @@ router.delete('/:email',
     validarCampos
 ], deleteUsuario);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export default router;
