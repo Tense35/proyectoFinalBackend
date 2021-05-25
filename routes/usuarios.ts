@@ -9,11 +9,12 @@ import { deleteUsuario, getUsuario, getUsuarios, postUsuario, putUsuario } from 
 // Helpers y middlewares
 import { emailExiste, emailNoExiste } from '../helpers/dbv-usuario';
 import { validarCampos } from '../middlewares/validar-campos';
+import validarJWT from '../middlewares/validar-jwt';
 
 // Rutas
 
 // Obtener todos los usuarios | !query: estado=false
-router.get('/', getUsuarios); 
+router.get('/', validarJWT ,getUsuarios); 
 
 // Obtener un usuario | !query: estado=false
 router.get('/:email',

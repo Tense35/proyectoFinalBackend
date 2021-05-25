@@ -29,11 +29,15 @@ const Usuario = db.define('Usuario',
     {
         type: DataTypes.STRING
     },
+    imagen: 
+    {
+        type: DataTypes.STRING,
+        defaultValue: 'https://res.cloudinary.com/tense/image/upload/v1621928936/noimage.jpg'
+    },
     estado: 
     {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-        
     }
 },
 {

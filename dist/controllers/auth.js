@@ -39,36 +39,84 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailNoExiste = exports.emailExiste = void 0;
+exports.getRenew = exports.postLogin = void 0;
+// Propios
+var jwt_generator_1 = __importDefault(require("../helpers/jwt-generator"));
 var usuario_1 = __importDefault(require("../models/usuario"));
-var emailExiste = function (email) { return __awaiter(void 0, void 0, void 0, function () {
-    var existeEmail;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, usuario_1.default.findByPk(email)];
+// Función para errores
+var sendError = function (error, res, area) {
+    console.log('------------------------------------------');
+    console.log("Error usuarios/controller, " + area);
+    console.log('------------------------------------------');
+    console.log(error);
+    res.status(500).json({
+        ok: false,
+        msg: 'Avisar al administrador del backend - usuarios/controller'
+    });
+};
+var postLogin = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, usuario, token, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, email = _a.email, password = _a.password;
+                _b.label = 1;
             case 1:
-                existeEmail = _a.sent();
-                if (existeEmail) {
-                    throw new Error("El email " + email + " ya se encuentra registrado en la base de datos");
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 2:
+                usuario = _b.sent();
+                // @ts-ignore
+                if (password !== usuario.password) {
+                    return [2 /*return*/, res.status(401).json({
+                            ok: false,
+                            msg: 'Password incorrecto'
+                        })];
                 }
-                return [2 /*return*/];
+                return [4 /*yield*/, jwt_generator_1.default(email)];
+            case 3:
+                token = _b.sent();
+                res.json({
+                    ok: true,
+                    token: token
+                });
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _b.sent();
+                sendError(error_1, res, 'postLogin');
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-exports.emailExiste = emailExiste;
-var emailNoExiste = function (email) { return __awaiter(void 0, void 0, void 0, function () {
-    var existeEmail;
+exports.postLogin = postLogin;
+var getRenew = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, email, token, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 0:
+                data = req.usuario;
+                email = data.email;
+                delete data.dataValues.password;
+                _a.label = 1;
             case 1:
-                existeEmail = _a.sent();
-                if (!existeEmail) {
-                    throw new Error("El email " + email + " no est\u00E1 registrado en la base de datos");
-                }
-                return [2 /*return*/];
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, jwt_generator_1.default(email)];
+            case 2:
+                token = _a.sent();
+                res.json({
+                    ok: true,
+                    token: token,
+                    data: data
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                error_2 = _a.sent();
+                sendError(error_2, res, 'postLogin');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.emailNoExiste = emailNoExiste;
-//# sourceMappingURL=dbv-usuario.js.map
+exports.getRenew = getRenew;
+//# sourceMappingURL=auth.js.map

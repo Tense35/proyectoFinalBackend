@@ -5,10 +5,10 @@ var express_validator_1 = require("express-validator");
 var validarCampos = function (req, res, next) {
     var errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        var errores = errors['errors'];
+        var msg = errors['errors'][0].msg;
         return res.status(400).json({
             ok: false,
-            errores: errores
+            msg: msg
         });
     }
     next();

@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProducto = exports.putProducto = exports.postProducto = exports.getProducto = exports.getProductos = void 0;
 // Propios
 var producto_1 = __importDefault(require("../models/producto"));
+var subir_archivos_1 = require("../helpers/subir-archivos");
 // Función para errores
 var sendError = function (error, res, area) {
     console.log('------------------------------------------');
@@ -55,36 +56,56 @@ var sendError = function (error, res, area) {
 };
 // Obtener todos los productos de la base de datos
 var getProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, data, _b, error_1;
+    var _a, _b, estado, descuento, stock, destacado, destacar, where, data, i, test, error_1;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
-                _a = req.query.estado, estado = _a === void 0 ? true : _a;
-                estado = (estado === 'false') ? false : true;
+                _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, descuento = _a.descuento, stock = _a.stock, destacado = _a.destacado;
+                destacar = (destacado === 'false') ? 0 : 1;
                 _c.label = 1;
             case 1:
-                _c.trys.push([1, 6, , 7]);
-                if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, producto_1.default.findAll({ where: { estado: true } })];
+                _c.trys.push([1, 3, , 4]);
+                where = {};
+                if (estado !== 'false') {
+                    where.estado = true;
+                }
+                if (descuento) {
+                    where.descuento = descuento;
+                }
+                if (stock) {
+                    where.stock = stock;
+                }
+                if (destacado) {
+                    where.destacar = destacar;
+                }
+                return [4 /*yield*/, producto_1.default.findAll({ where: where })];
             case 2:
-                _b = _c.sent();
-                return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, producto_1.default.findAll()];
-            case 4:
-                _b = _c.sent();
-                _c.label = 5;
-            case 5:
-                data = _b;
+                data = _c.sent();
+                i = 0;
+                test = data.forEach(function (elemento) {
+                    console.log('-----------------------------------');
+                    console.log('-----------------------------------');
+                    console.log('-----------------------------------');
+                    var desc = elemento.getDataValue('descuento');
+                    var iva = elemento.getDataValue('iva');
+                    var precio = elemento.getDataValue('precio');
+                    var total = precio - ((precio * desc) / 100) - ((precio * iva) / 100);
+                    console.log(elemento);
+                    console.log('-----------------------------------');
+                    console.log('-----------------------------------');
+                    console.log('-----------------------------------');
+                });
+                console.log(test);
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 4];
+            case 3:
                 error_1 = _c.sent();
                 sendError(error_1, res, 'getProductos');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
@@ -97,7 +118,6 @@ var getProducto = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 0:
                 _a = req.query.estado, estado = _a === void 0 ? 1 : _a;
                 id_producto = req.params.id_producto;
-                id_producto = id_producto.toLowerCase();
                 estado = (estado === 'false') ? 0 : 1;
                 _c.label = 1;
             case 1:
@@ -116,7 +136,7 @@ var getProducto = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 if (!data) {
                     return [2 /*return*/, res.status(404).json({
                             ok: true,
-                            data: 'No se encontró el producto, probablemente fue eliminado.'
+                            data: 'No se encontró la categoría, probablemente fue eliminado.'
                         })];
                 }
                 res.json({
@@ -134,11 +154,12 @@ var getProducto = function (req, res) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getProducto = getProducto;
 var postProducto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var info, data, error_3;
+    var info, archivo, imgUrl, data, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 info = req.body;
+                archivo = req.files;
                 info.color = info.color.toLowerCase();
                 info.talla = info.talla.toLowerCase();
                 info.nombre = info.nombre.toLowerCase();
@@ -146,31 +167,40 @@ var postProducto = function (req, res) { return __awaiter(void 0, void 0, void 0
                 info.descripcion = info.descripcion.toLowerCase();
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, producto_1.default.create(info)];
+                _a.trys.push([1, 5, , 6]);
+                if (!archivo) return [3 /*break*/, 3];
+                return [4 /*yield*/, subir_archivos_1.subirArchivo(archivo)];
             case 2:
+                imgUrl = _a.sent();
+                if (imgUrl) {
+                    info.imagen = imgUrl;
+                }
+                _a.label = 3;
+            case 3: return [4 /*yield*/, producto_1.default.create(info)];
+            case 4:
                 data = _a.sent();
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 4];
-            case 3:
+                return [3 /*break*/, 6];
+            case 5:
                 error_3 = _a.sent();
                 sendError(error_3, res, 'postProducto');
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
 exports.postProducto = postProducto;
 var putProducto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id_producto, info, producto, data, _a, error_4;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var id_producto, info, archivo, producto, productoImg, _a, _b, data, _c, error_4;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 id_producto = req.params.id_producto;
                 info = req.body;
+                archivo = req.files;
                 if (info.color) {
                     info.color = info.color.toLowerCase();
                 }
@@ -186,32 +216,48 @@ var putProducto = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 if (info.descripcion) {
                     info.descripcion = info.descripcion.toLowerCase();
                 }
-                _b.label = 1;
+                _d.label = 1;
             case 1:
-                _b.trys.push([1, 6, , 7]);
+                _d.trys.push([1, 11, , 12]);
                 return [4 /*yield*/, producto_1.default.findByPk(id_producto)];
             case 2:
-                producto = _b.sent();
-                if (!(producto)) return [3 /*break*/, 4];
-                return [4 /*yield*/, producto.update(info)];
+                producto = _d.sent();
+                productoImg = producto.dataValues.imagen;
+                if (!req.files) return [3 /*break*/, 7];
+                _a = info;
+                if (!(productoImg)) return [3 /*break*/, 4];
+                return [4 /*yield*/, subir_archivos_1.actualizarArchivo(req.files, productoImg)];
             case 3:
-                _a = _b.sent();
-                return [3 /*break*/, 5];
-            case 4:
-                _a = null;
-                _b.label = 5;
+                _b = _d.sent();
+                return [3 /*break*/, 6];
+            case 4: return [4 /*yield*/, subir_archivos_1.subirArchivo(req.files)];
             case 5:
-                data = _a;
+                _b = _d.sent();
+                _d.label = 6;
+            case 6:
+                _a.imagen = _b;
+                _d.label = 7;
+            case 7:
+                if (!(producto)) return [3 /*break*/, 9];
+                return [4 /*yield*/, producto.update(info)];
+            case 8:
+                _c = _d.sent();
+                return [3 /*break*/, 10];
+            case 9:
+                _c = null;
+                _d.label = 10;
+            case 10:
+                data = _c;
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 7];
-            case 6:
-                error_4 = _b.sent();
+                return [3 /*break*/, 12];
+            case 11:
+                error_4 = _d.sent();
                 sendError(error_4, res, 'putProducto');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
     });
 }); };

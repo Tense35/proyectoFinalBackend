@@ -12,11 +12,47 @@ var Venta = connection_1.default.define('Venta', {
         primaryKey: true,
         autoIncrement: true
     },
-    nombre: {
-        type: sequelize_1.DataTypes.STRING
+    id_producto: {
+        type: sequelize_1.DataTypes.INTEGER,
+        validate: {
+            notEmpty: {
+                msg: 'El id del producto es obligatorio.'
+            }
+        }
     },
-    password: {
-        type: sequelize_1.DataTypes.STRING
+    id_cliente: {
+        type: sequelize_1.DataTypes.INTEGER,
+        validate: {
+            notEmpty: {
+                msg: 'El id del cliente es obligatorio.'
+            }
+        }
+    },
+    direccion: {
+        type: sequelize_1.DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'La dirección es obligatoria.'
+            }
+        }
+    },
+    metodo: {
+        type: sequelize_1.DataTypes.ENUM('CARD', 'NEQUI', 'PSE', 'BANCOLOMBIA_TRANSFER', 'BANCOLOMBIA_COLLECT'),
+        validate: {
+            notEmpty: {
+                msg: 'El método de pago es obligatorio.'
+            }
+        }
+    },
+    transaccion: {
+        type: sequelize_1.DataTypes.ENUM('PENDING', 'APPROVED', 'DECLINED', 'ERROR', 'VOIDED'),
+        defaultValue: 'PENDING'
+    },
+    total: {
+        type: sequelize_1.DataTypes.FLOAT
+    },
+    fecha: {
+        type: sequelize_1.DataTypes.DATE
     },
     estado: {
         type: sequelize_1.DataTypes.BOOLEAN,

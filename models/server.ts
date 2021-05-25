@@ -1,15 +1,17 @@
 // Terceros
-import express, { Application } from "express";
 import cors from "cors";
+import express, { Application } from "express";
+import fileUpload from "express-fileupload";
 
 // Propios
 import db from "../db/connection";
 
+// Rutas
+import authRoutes from '../routes/auth';
 import categoriasRoutes from '../routes/categorias';
 import clientesRoutes from '../routes/clientes';
 import productosRoutes from '../routes/productos';
 import usuariosRoutes from '../routes/usuarios';
-
 
 class Server 
 {
@@ -21,11 +23,12 @@ class Server
     // Definición de endpoints
     private paths =
     {
-        usuarios: '/api/usuarios',
+        auth: '/api/auth',
         categorias: '/api/categorias',
         clientes: '/api/clientes',
-        ventas: '/api/ventas',
-        productos: '/api/productos'
+        productos: '/api/productos',
+        usuarios: '/api/usuarios',
+        ventas: '/api/ventas'
     };
 
     constructor()
@@ -60,16 +63,27 @@ class Server
         // Lectura del body - Permite leer el body de las peticiones rest
         this.app.use( express.json() );
 
-        // Carpeta pública -  Carpeta inicial en el navegador
+        // Carpeta pública - Carpeta inicial en el navegador
         this.app.use( express.static('public'));
+
+        // Permitir subir archivo mediante el API REST
+        this.app.use
+        (
+            fileUpload
+            ({
+                useTempFiles : true,
+                tempFileDir : '/tmp/'
+            })
+        );
     }
 
     // Definición de rutas
     routes()
     {
-        this.app.use( this.paths.categorias, categoriasRoutes);
-        this.app.use( this.paths.clientes, clientesRoutes);
-        this.app.use( this.paths.productos, productosRoutes);
+        this.app.use( this.paths.auth, authRoutes );
+        this.app.use( this.paths.categorias, categoriasRoutes );
+        this.app.use( this.paths.clientes, clientesRoutes );
+        this.app.use( this.paths.productos, productosRoutes );
         this.app.use( this.paths.usuarios, usuariosRoutes );
     }
 

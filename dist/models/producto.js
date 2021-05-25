@@ -12,6 +12,9 @@ var Producto = connection_1.default.define('Producto', {
         primaryKey: true,
         autoIncrement: true
     },
+    id_categoria: {
+        type: sequelize_1.DataTypes.INTEGER
+    },
     color: {
         type: sequelize_1.DataTypes.STRING,
         validate: {
@@ -62,7 +65,7 @@ var Producto = connection_1.default.define('Producto', {
     },
     imagen: {
         type: sequelize_1.DataTypes.STRING,
-        defaultValue: 'noimage.jpg'
+        defaultValue: 'https://res.cloudinary.com/tense/image/upload/v1621928936/noimage.jpg'
     },
     iva: {
         type: sequelize_1.DataTypes.FLOAT,

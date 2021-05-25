@@ -31,7 +31,6 @@ router.post('/',
     check('id_categoria').custom( categoriaNoExiste ),
     check('color', 'El color del producto es obligatorio').notEmpty(),
     check('talla', 'La talla del producto es obligatoria').notEmpty(),
-    check('marca', 'La marca del producto es obligatoria').notEmpty(),
     check('nombre', 'El nombre del producto es obligatorio').notEmpty(),
     check('genero', 'El genero del producto es obligatorio').notEmpty(),
     check('descripcion', 'La descripción del producto es obligatoria').notEmpty(),
@@ -41,6 +40,9 @@ router.post('/',
 router.put('/:id_producto',
 [
     check('id_producto').custom( productoNoExiste ),
+    check('id_categoria', 'El id_categoria es obligatorio').notEmpty(),
+    validarCampos,
+    check('id_categoria').custom( categoriaNoExiste ),
     validarCampos
 ], putProducto);
 

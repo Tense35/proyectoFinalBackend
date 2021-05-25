@@ -40,10 +40,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Terceros
-var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
+var express_1 = __importDefault(require("express"));
+var express_fileupload_1 = __importDefault(require("express-fileupload"));
 // Propios
 var connection_1 = __importDefault(require("../db/connection"));
+// Rutas
+var auth_1 = __importDefault(require("../routes/auth"));
 var categorias_1 = __importDefault(require("../routes/categorias"));
 var clientes_1 = __importDefault(require("../routes/clientes"));
 var productos_1 = __importDefault(require("../routes/productos"));
@@ -52,11 +55,12 @@ var Server = /** @class */ (function () {
     function Server() {
         // Definición de endpoints
         this.paths = {
-            usuarios: '/api/usuarios',
+            auth: '/api/auth',
             categorias: '/api/categorias',
             clientes: '/api/clientes',
-            ventas: '/api/ventas',
-            productos: '/api/productos'
+            productos: '/api/productos',
+            usuarios: '/api/usuarios',
+            ventas: '/api/ventas'
         };
         this.app = express_1.default();
         this.port = process.env.PORT || '8081';
@@ -91,11 +95,17 @@ var Server = /** @class */ (function () {
         this.app.use(cors_1.default());
         // Lectura del body - Permite leer el body de las peticiones rest
         this.app.use(express_1.default.json());
-        // Carpeta pública -  Carpeta inicial en el navegador
+        // Carpeta pública - Carpeta inicial en el navegador
         this.app.use(express_1.default.static('public'));
+        // Permitir subir archivo mediante el API REST
+        this.app.use(express_fileupload_1.default({
+            useTempFiles: true,
+            tempFileDir: '/tmp/'
+        }));
     };
     // Definición de rutas
     Server.prototype.routes = function () {
+        this.app.use(this.paths.auth, auth_1.default);
         this.app.use(this.paths.categorias, categorias_1.default);
         this.app.use(this.paths.clientes, clientes_1.default);
         this.app.use(this.paths.productos, productos_1.default);

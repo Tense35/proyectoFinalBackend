@@ -26,6 +26,10 @@ var Usuario = connection_1.default.define('Usuario', {
     password: {
         type: sequelize_1.DataTypes.STRING
     },
+    imagen: {
+        type: sequelize_1.DataTypes.STRING,
+        defaultValue: 'https://res.cloudinary.com/tense/image/upload/v1621928936/noimage.jpg'
+    },
     estado: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: true,

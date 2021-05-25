@@ -10,19 +10,67 @@ const Venta = db.define('Venta',
         primaryKey: true,
         autoIncrement: true
     },
-    nombre: 
+    id_producto: 
     {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER,
+        validate:
+        {
+            notEmpty: 
+            {
+                msg:'El id del producto es obligatorio.'
+            }
+        }
     },
-    password: 
+    id_cliente: 
     {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER,
+        validate:
+        {
+            notEmpty: 
+            {
+                msg:'El id del cliente es obligatorio.'
+            }
+        }
+    },
+    direccion: 
+    {
+        type: DataTypes.STRING,
+        validate:
+        {
+            notEmpty: 
+            {
+                msg:'La dirección es obligatoria.'
+            }
+        }
+    },
+    metodo: 
+    {
+        type: DataTypes.ENUM('CARD', 'NEQUI', 'PSE', 'BANCOLOMBIA_TRANSFER', 'BANCOLOMBIA_COLLECT'),
+        validate:
+        {
+            notEmpty: 
+            {
+                msg:'El método de pago es obligatorio.'
+            }
+        }
+    },
+    transaccion: 
+    {
+        type: DataTypes.ENUM('PENDING', 'APPROVED', 'DECLINED', 'ERROR', 'VOIDED'),
+        defaultValue: 'PENDING'
+    },
+    total: 
+    {
+        type: DataTypes.FLOAT
+    },
+    fecha: 
+    {
+        type: DataTypes.DATE
     },
     estado: 
     {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-        
     }
 },
 {

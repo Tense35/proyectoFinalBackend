@@ -39,37 +39,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.categoriaNoExiste = exports.categoriaExiste = void 0;
-var categoria_1 = __importDefault(require("../models/categoria"));
-var categoriaExiste = function (id_categoria) { return __awaiter(void 0, void 0, void 0, function () {
-    var existeCategoria;
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// Propios
+var usuario_1 = __importDefault(require("../models/usuario"));
+var validarJWT = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, key, email, usuario, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, categoria_1.default.findByPk(id_categoria)];
-            case 1:
-                existeCategoria = _a.sent();
-                if (existeCategoria) {
-                    throw new Error("La categor\u00EDa con id " + id_categoria + " ya se encuentra registrada en la base de datos");
+            case 0:
+                token = req.header('x-token');
+                key = process.env.JWT_KEY || "error";
+                // Validar que envíen el token
+                if (!token) {
+                    return [2 /*return*/, res.status(401).json({
+                            msg: 'No hay token en la petición'
+                        })];
                 }
-                return [2 /*return*/];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                email = jsonwebtoken_1.default.verify(token, key).email;
+                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 2:
+                usuario = _a.sent();
+                // Verificar que el usuario no esté vacío
+                if (!usuario) {
+                    return [2 /*return*/, res.status(401).json({
+                            ok: false,
+                            msg: 'Token no válido - usuario no existe en DB'
+                        })];
+                }
+                // Verificar si el usuario tiene estado en true
+                // @ts-ignore
+                if (!usuario.estado) {
+                    return [2 /*return*/, res.status(401).json({
+                            ok: false,
+                            msg: 'Token no válido - usuario con estado: false'
+                        })];
+                }
+                // @ts-ignore
+                req.usuario = usuario;
+                next();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                console.log(error_1);
+                return [2 /*return*/, res.status(401).json({
+                        ok: false,
+                        msg: 'Token no válido - catch'
+                    })];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.categoriaExiste = categoriaExiste;
-var categoriaNoExiste = function (id_categoria) { return __awaiter(void 0, void 0, void 0, function () {
-    var existeCategoria;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, categoria_1.default.findByPk(id_categoria)];
-            case 1:
-                existeCategoria = _a.sent();
-                console.log(existeCategoria);
-                if (!existeCategoria) {
-                    throw new Error("La categor\u00EDa con id: " + id_categoria + ", no est\u00E1 registrada en la base de datos");
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.categoriaNoExiste = categoriaNoExiste;
-//# sourceMappingURL=dbv-categorias.js.map
+exports.default = validarJWT;
+//# sourceMappingURL=validar-jwt.js.map

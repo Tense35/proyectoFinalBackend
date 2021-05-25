@@ -39,15 +39,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = void 0;
+exports.deleteVenta = exports.putVenta = exports.postVenta = exports.getVenta = exports.getVentas = void 0;
 // Propios
-var jwt_generator_1 = __importDefault(require("../helpers/jwt-generator"));
-var subir_archivos_1 = require("../helpers/subir-archivos");
-var usuario_1 = __importDefault(require("../models/usuario"));
+var dbv_cliente_1 = require("../helpers/dbv-cliente");
+var dbv_producto_1 = require("../helpers/dbv-producto");
+var venta_1 = __importDefault(require("../models/venta"));
 // Función para errores
 var sendError = function (error, res, area) {
     console.log('------------------------------------------');
-    console.log("Error usuarios/controller, " + area);
+    console.log("Error ventas/controller, " + area);
     console.log('------------------------------------------');
     console.log(error);
     res.status(500).json({
@@ -55,61 +55,81 @@ var sendError = function (error, res, area) {
         msg: 'Avisar al administrador del backend - categorias/controller'
     });
 };
-// Obtener todos los usuarios de la base de datos
-var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, data, _b, error_1;
+// Listados
+var metodos = ['CARD', 'NEQUI', 'PSE', 'BANCOLOMBIA_TRANSFER', 'BANCOLOMBIA_COLLECT'];
+var transacciones = ['PENDING', 'APPROVED', 'DECLINED', 'ERROR', 'VOIDED'];
+// Obtener todas las ventas de la base de datos
+var getVentas = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, estado, id_producto, id_cliente, metodo, transaccion, total, where, data, error_1;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
-                _a = req.query.estado, estado = _a === void 0 ? true : _a;
-                estado = (estado === 'false') ? false : true;
+                _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, id_producto = _a.id_producto, id_cliente = _a.id_cliente, metodo = _a.metodo, transaccion = _a.transaccion, total = _a.total;
                 _c.label = 1;
             case 1:
-                _c.trys.push([1, 6, , 7]);
-                if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true } })];
+                _c.trys.push([1, 3, , 4]);
+                where = {};
+                if (estado !== 'false') {
+                    where.estado = true;
+                }
+                if (id_producto) {
+                    if (dbv_producto_1.productoNoExiste(Number(id_producto))) {
+                        where.id_producto = Number(id_producto);
+                    }
+                }
+                if (id_cliente) {
+                    if (dbv_cliente_1.clienteNoExiste(Number(id_cliente))) {
+                        where.id_cliente = Number(id_cliente);
+                    }
+                }
+                if (metodo) {
+                    if (metodos.includes(String(metodo))) {
+                        where.metodo = String(metodo);
+                    }
+                }
+                if (transaccion) {
+                    if (transacciones.includes(String(transaccion))) {
+                        where.transaccion = String(transaccion);
+                    }
+                }
+                if (total) {
+                    where.total = Number(total);
+                }
+                return [4 /*yield*/, venta_1.default.findAll({ where: where })];
             case 2:
-                _b = _c.sent();
-                return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findAll()];
-            case 4:
-                _b = _c.sent();
-                _c.label = 5;
-            case 5:
-                data = _b;
+                data = _c.sent();
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 4];
+            case 3:
                 error_1 = _c.sent();
-                sendError(error_1, res, 'getUsuarios');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                sendError(error_1, res, 'getVentas');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuarios = getUsuarios;
-// Obtener un usuario específico de la base de datos
-var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, email, data, _b, error_2;
+exports.getVentas = getVentas;
+// Obtener una venta específica de la base de datos
+var getVenta = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, estado, id_venta, data, _b, error_2;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _a = req.query.estado, estado = _a === void 0 ? 1 : _a;
-                email = req.params.email;
-                email = email.toLowerCase();
+                id_venta = req.params.id_venta;
                 estado = (estado === 'false') ? 0 : 1;
                 _c.label = 1;
             case 1:
                 _c.trys.push([1, 6, , 7]);
                 if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findOne({ where: { email: email, estado: 1 } })];
+                return [4 /*yield*/, venta_1.default.findOne({ where: { id_venta: id_venta, estado: 1 } })];
             case 2:
                 _b = _c.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findByPk(email)];
+            case 3: return [4 /*yield*/, venta_1.default.findByPk(id_venta)];
             case 4:
                 _b = _c.sent();
                 _c.label = 5;
@@ -118,7 +138,7 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!data) {
                     return [2 /*return*/, res.status(404).json({
                             ok: true,
-                            data: 'No se encontró el usuario, probablemente fue eliminado.'
+                            data: 'No se encontró la venta, probablemente fue eliminada.'
                         })];
                 }
                 res.json({
@@ -128,62 +148,49 @@ var getUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 7];
             case 6:
                 error_2 = _c.sent();
-                sendError(error_2, res, 'getUsuario');
+                sendError(error_2, res, 'getVenta');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.getUsuario = getUsuario;
-var postUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var info, archivo, imgUrl, data, token, error_3;
+exports.getVenta = getVenta;
+var postVenta = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var info, data, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 info = req.body;
-                archivo = req.files;
-                info.email = info.email.toLowerCase();
-                info.nombre = info.nombre.toLowerCase();
+                info.direccion = info.direccion.toLowerCase();
+                info.metodo = info.metodo.toUpperCase();
+                info.transaccion = info.transaccion.toUpperCase();
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 6, , 7]);
-                if (!archivo) return [3 /*break*/, 3];
-                return [4 /*yield*/, subir_archivos_1.subirArchivo(archivo)];
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, venta_1.default.create(info)];
             case 2:
-                imgUrl = _a.sent();
-                if (imgUrl) {
-                    info.imagen = imgUrl;
-                }
-                _a.label = 3;
-            case 3: return [4 /*yield*/, usuario_1.default.create(info)];
-            case 4:
                 data = _a.sent();
-                return [4 /*yield*/, jwt_generator_1.default(data.email)];
-            case 5:
-                token = _a.sent();
                 res.json({
                     ok: true,
-                    data: data,
-                    token: token
+                    data: data
                 });
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 4];
+            case 3:
                 error_3 = _a.sent();
-                sendError(error_3, res, 'postUsuario');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                sendError(error_3, res, 'postVenta');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.postUsuario = postUsuario;
-var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, info, archivo, usuario, usuarioImg, _a, _b, data, _c, error_4;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
+exports.postVenta = postVenta;
+var putVenta = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var email, info, venta, data, _a, error_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 email = req.params.email;
                 info = req.body;
-                archivo = req.files;
                 if (info.nombre) {
                     info.nombre = info.nombre.toLowerCase();
                 }
@@ -195,56 +202,38 @@ var putUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                             })];
                     }
                 }
-                _d.label = 1;
+                _b.label = 1;
             case 1:
-                _d.trys.push([1, 11, , 12]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                _b.trys.push([1, 6, , 7]);
+                return [4 /*yield*/, venta_1.default.findByPk(email)];
             case 2:
-                usuario = _d.sent();
-                usuarioImg = usuario.dataValues.imagen;
-                if (!req.files) return [3 /*break*/, 7];
-                //@ts-ignore
-                _a = info;
-                if (!(usuarioImg)) return [3 /*break*/, 4];
-                return [4 /*yield*/, subir_archivos_1.actualizarArchivo(req.files, usuarioImg)];
+                venta = _b.sent();
+                if (!(venta)) return [3 /*break*/, 4];
+                return [4 /*yield*/, venta.update(info)];
             case 3:
-                _b = _d.sent();
-                return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, subir_archivos_1.subirArchivo(req.files)];
+                _a = _b.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                _a = null;
+                _b.label = 5;
             case 5:
-                _b = _d.sent();
-                _d.label = 6;
-            case 6:
-                //@ts-ignore
-                _a.imagen = _b;
-                _d.label = 7;
-            case 7:
-                if (!(usuario)) return [3 /*break*/, 9];
-                return [4 /*yield*/, usuario.update(info)];
-            case 8:
-                _c = _d.sent();
-                return [3 /*break*/, 10];
-            case 9:
-                _c = null;
-                _d.label = 10;
-            case 10:
-                data = _c;
+                data = _a;
                 res.json({
                     ok: true,
                     data: data
                 });
-                return [3 /*break*/, 12];
-            case 11:
-                error_4 = _d.sent();
-                sendError(error_4, res, 'putUsuario');
-                return [3 /*break*/, 12];
-            case 12: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 6:
+                error_4 = _b.sent();
+                sendError(error_4, res, 'putVenta');
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.putUsuario = putUsuario;
-var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, usuario, data, _a, error_5;
+exports.putVenta = putVenta;
+var deleteVenta = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var email, venta, data, _a, error_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -252,11 +241,11 @@ var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, usuario_1.default.findByPk(email)];
+                return [4 /*yield*/, venta_1.default.findByPk(email)];
             case 2:
-                usuario = _b.sent();
-                if (!(usuario)) return [3 /*break*/, 4];
-                return [4 /*yield*/, usuario.update({ estado: 0 })];
+                venta = _b.sent();
+                if (!(venta)) return [3 /*break*/, 4];
+                return [4 /*yield*/, venta.update({ estado: 0 })];
             case 3:
                 _a = _b.sent();
                 return [3 /*break*/, 5];
@@ -272,11 +261,11 @@ var deleteUsuario = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 7];
             case 6:
                 error_5 = _b.sent();
-                sendError(error_5, res, 'deleteUsuario');
+                sendError(error_5, res, 'deleteVenta');
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.deleteUsuario = deleteUsuario;
-//# sourceMappingURL=usuarios.js.map
+exports.deleteVenta = deleteVenta;
+//# sourceMappingURL=ventas.js.map

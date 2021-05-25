@@ -10,6 +10,10 @@ const Producto = db.define('Producto',
         primaryKey: true,
         autoIncrement: true
     },
+    id_categoria: 
+    {
+        type: DataTypes.INTEGER
+    },
     color: 
     {
         type: DataTypes.STRING,
@@ -79,7 +83,7 @@ const Producto = db.define('Producto',
     imagen: 
     {
         type: DataTypes.STRING,
-        defaultValue: 'noimage.jpg'
+        defaultValue: 'https://res.cloudinary.com/tense/image/upload/v1621928936/noimage.jpg'
     },
     iva: 
     {

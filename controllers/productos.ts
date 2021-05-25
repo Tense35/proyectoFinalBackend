@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 
 // Propios
 import Producto from '../models/producto';
+import { actualizarArchivo, subirArchivo } from '../helpers/subir-archivos';
 
 // Función para errores
 
@@ -22,13 +23,54 @@ const sendError = ( error: Error, res: Response, area:string ) =>
 // Obtener todos los productos de la base de datos
 export const getProductos = async( req: Request, res: Response ) => 
 {
-    let { estado = true } = req.query;
+    let { estado = true, descuento, stock, destacado } = req.query;
 
-    estado = ( estado === 'false' )? false : true;
-
+    const destacar = ( destacado === 'false' )? 0 : 1;
+    
     try 
     {
-        const data = ( estado )? await Producto.findAll({ where: { estado: true } }) : await Producto.findAll();
+        let where: any = { };
+        
+        if ( estado !== 'false' )
+        {
+            where.estado = true;
+        }
+
+        if ( descuento )
+        {
+            where.descuento = descuento;
+        }
+
+        if ( stock )
+        {
+            where.stock = stock;
+        }
+
+        if ( destacado )
+        {
+            where.destacar = destacar;
+        }
+
+        const data = await Producto.findAll({ where });
+
+        let i = 0;
+        const test = data.forEach( elemento => 
+        {
+            console.log('-----------------------------------');
+            console.log('-----------------------------------');
+            console.log('-----------------------------------');
+            const desc = elemento.getDataValue('descuento');
+            const iva = elemento.getDataValue('iva');
+            const precio = elemento.getDataValue('precio');
+            const total = precio - ((precio*desc)/100) - ((precio*iva)/100);
+
+            console.log( elemento );
+            console.log('-----------------------------------');
+            console.log('-----------------------------------');
+            console.log('-----------------------------------');
+        } )
+
+        console.log(test);
 
         res.json
         ({
@@ -47,7 +89,6 @@ export const getProducto = async( req: Request, res: Response ) =>
 {
     let { estado = 1 } = req.query;
     let { id_producto } = req.params;
-    id_producto = id_producto.toLowerCase();
 
     estado = ( estado === 'false' )? 0 : 1;
 
@@ -60,7 +101,7 @@ export const getProducto = async( req: Request, res: Response ) =>
             return res.status(404).json
             ({
                 ok: true,
-                data: 'No se encontró el producto, probablemente fue eliminado.'
+                data: 'No se encontró la categoría, probablemente fue eliminado.'
             });
         }
 
@@ -79,6 +120,8 @@ export const getProducto = async( req: Request, res: Response ) =>
 export const postProducto = async( req: Request, res: Response ) => 
 {
     const info = req.body;
+    const archivo = req.files;
+
     info.color = info.color.toLowerCase();
     info.talla = info.talla.toLowerCase();
     info.nombre = info.nombre.toLowerCase();
@@ -87,6 +130,17 @@ export const postProducto = async( req: Request, res: Response ) =>
 
     try 
     {
+        if ( archivo )
+        {
+            const imgUrl = await subirArchivo( archivo );
+
+            if ( imgUrl )
+            {
+                info.imagen = imgUrl;
+            }
+        }
+        
+
         const data = await Producto.create( info );
 
         res.json
@@ -105,6 +159,8 @@ export const putProducto = async( req: Request, res: Response ) =>
 {
     const { id_producto } = req.params;
     const info = req.body;
+
+    const archivo = req.files;
 
     if ( info.color )
     {
@@ -133,7 +189,14 @@ export const putProducto = async( req: Request, res: Response ) =>
 
     try 
     {
-        const producto = await Producto.findByPk( id_producto );
+        const producto: any = await Producto.findByPk( id_producto );
+        const productoImg = producto.dataValues.imagen;
+
+        if ( req.files )
+        {
+            info.imagen = ( productoImg )? await actualizarArchivo( req.files, productoImg ) : await subirArchivo( req.files );
+        }
+
         const data = ( producto )? await producto.update(info) : null;
 
         res.json

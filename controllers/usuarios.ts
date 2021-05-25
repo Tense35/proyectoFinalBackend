@@ -2,10 +2,11 @@
 import { Request, Response } from "express";
 
 // Propios
+import generarJWT from "../helpers/jwt-generator";
+import { subirArchivo, actualizarArchivo } from "../helpers/subir-archivos";
 import Usuario from '../models/usuario';
 
 // Función para errores
-
 const sendError = ( error: Error, res: Response, area:string ) =>
 {
     console.log('------------------------------------------');
@@ -79,17 +80,32 @@ export const getUsuario = async( req: Request, res: Response ) =>
 export const postUsuario = async( req: Request, res: Response ) => 
 {
     const info = req.body;
+    const archivo = req.files;
     info.email = info.email.toLowerCase();
     info.nombre = info.nombre.toLowerCase();
 
     try 
     {
+
+        if ( archivo )
+        {
+            const imgUrl = await subirArchivo( archivo );
+
+            if ( imgUrl )
+            {
+                info.imagen = imgUrl;
+            }
+        }
+        
         const data = await Usuario.create( info );
+        // @ts-ignore
+        const token = await generarJWT( data.email );
 
         res.json
         ({
             ok: true,
-            data
+            data,
+            token
         });
     } 
     catch (error) 
@@ -102,6 +118,7 @@ export const putUsuario = async( req: Request, res: Response ) =>
 {
     const { email } = req.params;
     const info = req.body;
+    const archivo = req.files;
 
     if ( info.nombre )
     {
@@ -123,6 +140,15 @@ export const putUsuario = async( req: Request, res: Response ) =>
     try 
     {
         const usuario = await Usuario.findByPk( email );
+        //@ts-ignore
+        const usuarioImg = usuario.dataValues.imagen;
+
+        if ( req.files )
+        {
+            //@ts-ignore
+            info.imagen = ( usuarioImg )? await actualizarArchivo( req.files, usuarioImg ) : await subirArchivo( req.files );
+        }
+
         const data = ( usuario )? await usuario.update(info) : null;
 
         res.json

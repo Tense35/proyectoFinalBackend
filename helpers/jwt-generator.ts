@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-const generarJWT = ( uid = '' ) => 
+const generarJWT = ( email = '' ) => 
 {
     return new Promise(( resolve, reject ) => 
     {
-        const payload = { uid };
+        const payload = { email };
 
         jwt.sign( payload, process.env.JWT_KEY || '', { expiresIn: '24h' },
         ( err, token ) => 

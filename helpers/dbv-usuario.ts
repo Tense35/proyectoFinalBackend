@@ -15,10 +15,8 @@ export const emailNoExiste = async( email: string ) =>
 {
     const existeEmail = await Usuario.findByPk( email );
 
-    console.log(existeEmail);
-
     if ( !existeEmail )
     {
-        throw new Error(`El email ${ email } no está registrado en la base de datos`)
+        throw new Error(`El email ${ email } no está registrado en la base de datos`);
     }
 }
