@@ -11,7 +11,7 @@ var v_rutas_1 = require("../helpers/v-rutas");
 var validar_campos_1 = require("../middlewares/validar-campos");
 // Rutas
 // Obtener un producto | !query: estado=false
-router.get('/:tabla/:campo', [
+router.get('/:tabla/:campo/:termino', [
     express_validator_1.check('tabla').custom(v_rutas_1.rutaNoExiste),
     express_validator_1.check('campo', 'El campo es obligatorio').notEmpty(),
     express_validator_1.check('termino', 'El término es obligatorio').notEmpty(),

@@ -23,8 +23,7 @@ const sendError = ( error: Error, res: Response, area:string ) =>
 export const getSearch = async( req: Request, res: Response ) => 
 {
     let { estado = true, limite = 10, desde = 0 } = req.query;
-    let { campo, tabla } = req.params;
-    const { termino } = req.body;
+    let { campo, tabla, termino } = req.params;
 
     estado = ( estado === 'false' )? false : true;
 

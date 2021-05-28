@@ -23,7 +23,7 @@ const sendError = ( error: Error, res: Response, area:string ) =>
 // Obtener todos los usuarios de la base de datos
 export const getUsuarios = async( req: Request, res: Response ) => 
 {
-    let { estado = true, limite = 10, desde = 0 } = req.query;
+    let { estado = true, limite = 40, desde = 0 } = req.query;
 
     estado = ( estado === 'false' )? false : true;
 
@@ -37,7 +37,7 @@ export const getUsuarios = async( req: Request, res: Response ) =>
         const [ data, total ] = await Promise.all
         ([
             // Data
-            ( estado )? await Usuario.findAll({ where: { estado: true }, limit: limite, offset: desde }) : await Usuario.findAll({ limit: limite, offset: desde }),
+            ( estado )? await Usuario.findAll({ where: { estado: true }, order: [['email', 'ASC']], limit: limite, offset: desde }) : await Usuario.findAll({ limit: limite, offset: desde }),
 
             // Total
             await Usuario.count()

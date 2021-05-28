@@ -14,7 +14,7 @@ import { validarCampos } from '../middlewares/validar-campos';
 // Rutas
 
 // Obtener un producto | !query: estado=false
-router.get('/:tabla/:campo',
+router.get('/:tabla/:campo/:termino',
 [
     check('tabla').custom( rutaNoExiste ),
     check('campo', 'El campo es obligatorio').notEmpty(),

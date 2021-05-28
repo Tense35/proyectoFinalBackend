@@ -62,8 +62,7 @@ var getSearch = function (req, res) { return __awaiter(void 0, void 0, void 0, f
         switch (_v.label) {
             case 0:
                 _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, _c = _a.limite, limite = _c === void 0 ? 10 : _c, _d = _a.desde, desde = _d === void 0 ? 0 : _d;
-                _e = req.params, campo = _e.campo, tabla = _e.tabla;
-                termino = req.body.termino;
+                _e = req.params, campo = _e.campo, tabla = _e.tabla, termino = _e.termino;
                 estado = (estado === 'false') ? false : true;
                 _v.label = 1;
             case 1:

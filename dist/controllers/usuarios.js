@@ -61,7 +61,7 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
     return __generator(this, function (_k) {
         switch (_k.label) {
             case 0:
-                _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, _c = _a.limite, limite = _c === void 0 ? 10 : _c, _d = _a.desde, desde = _d === void 0 ? 0 : _d;
+                _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, _c = _a.limite, limite = _c === void 0 ? 40 : _c, _d = _a.desde, desde = _d === void 0 ? 0 : _d;
                 estado = (estado === 'false') ? false : true;
                 _k.label = 1;
             case 1:
@@ -75,7 +75,7 @@ var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 (estado)) 
                 // Data
                 return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true }, limit: limite, offset: desde })];
+                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true }, order: [['email', 'ASC']], limit: limite, offset: desde })];
             case 2:
                 _h = _k.sent();
                 return [3 /*break*/, 5];
