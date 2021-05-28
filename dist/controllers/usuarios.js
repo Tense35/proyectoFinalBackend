@@ -57,36 +57,55 @@ var sendError = function (error, res, area) {
 };
 // Obtener todos los usuarios de la base de datos
 var getUsuarios = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, estado, data, _b, error_1;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _a, _b, estado, _c, limite, _d, desde, _e, data, total, _f, _g, _h, _j, error_1;
+    return __generator(this, function (_k) {
+        switch (_k.label) {
             case 0:
-                _a = req.query.estado, estado = _a === void 0 ? true : _a;
+                _a = req.query, _b = _a.estado, estado = _b === void 0 ? true : _b, _c = _a.limite, limite = _c === void 0 ? 10 : _c, _d = _a.desde, desde = _d === void 0 ? 0 : _d;
                 estado = (estado === 'false') ? false : true;
-                _c.label = 1;
+                _k.label = 1;
             case 1:
-                _c.trys.push([1, 6, , 7]);
-                if (!(estado)) return [3 /*break*/, 3];
-                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true } })];
+                _k.trys.push([1, 8, , 9]);
+                // Parseo
+                limite = Number(limite);
+                desde = Number(desde);
+                _g = (_f = Promise).all;
+                if (!
+                // Data
+                (estado)) 
+                // Data
+                return [3 /*break*/, 3];
+                return [4 /*yield*/, usuario_1.default.findAll({ where: { estado: true }, limit: limite, offset: desde })];
             case 2:
-                _b = _c.sent();
+                _h = _k.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, usuario_1.default.findAll()];
+            case 3: return [4 /*yield*/, usuario_1.default.findAll({ limit: limite, offset: desde })];
             case 4:
-                _b = _c.sent();
-                _c.label = 5;
+                _h = _k.sent();
+                _k.label = 5;
             case 5:
-                data = _b;
+                _j = [
+                    _h
+                ];
+                // Total
+                return [4 /*yield*/, usuario_1.default.count()];
+            case 6: return [4 /*yield*/, _g.apply(_f, [_j.concat([
+                        // Total
+                        _k.sent()
+                    ])])];
+            case 7:
+                _e = _k.sent(), data = _e[0], total = _e[1];
                 res.json({
                     ok: true,
-                    data: data
+                    data: data,
+                    total: total
                 });
-                return [3 /*break*/, 7];
-            case 6:
-                error_1 = _c.sent();
+                return [3 /*break*/, 9];
+            case 8:
+                error_1 = _k.sent();
                 sendError(error_1, res, 'getUsuarios');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); };

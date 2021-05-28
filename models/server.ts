@@ -11,6 +11,7 @@ import authRoutes from '../routes/auth';
 import categoriasRoutes from '../routes/categorias';
 import clientesRoutes from '../routes/clientes';
 import productosRoutes from '../routes/productos';
+import searchRoutes from '../routes/search';
 import usuariosRoutes from '../routes/usuarios';
 
 class Server 
@@ -27,6 +28,7 @@ class Server
         categorias: '/api/categorias',
         clientes: '/api/clientes',
         productos: '/api/productos',
+        search: '/api/search',
         usuarios: '/api/usuarios',
         ventas: '/api/ventas'
     };
@@ -84,6 +86,7 @@ class Server
         this.app.use( this.paths.categorias, categoriasRoutes );
         this.app.use( this.paths.clientes, clientesRoutes );
         this.app.use( this.paths.productos, productosRoutes );
+        this.app.use( this.paths.search, searchRoutes );
         this.app.use( this.paths.usuarios, usuariosRoutes );
     }
 

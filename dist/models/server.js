@@ -50,6 +50,7 @@ var auth_1 = __importDefault(require("../routes/auth"));
 var categorias_1 = __importDefault(require("../routes/categorias"));
 var clientes_1 = __importDefault(require("../routes/clientes"));
 var productos_1 = __importDefault(require("../routes/productos"));
+var search_1 = __importDefault(require("../routes/search"));
 var usuarios_1 = __importDefault(require("../routes/usuarios"));
 var Server = /** @class */ (function () {
     function Server() {
@@ -59,6 +60,7 @@ var Server = /** @class */ (function () {
             categorias: '/api/categorias',
             clientes: '/api/clientes',
             productos: '/api/productos',
+            search: '/api/search',
             usuarios: '/api/usuarios',
             ventas: '/api/ventas'
         };
@@ -109,6 +111,7 @@ var Server = /** @class */ (function () {
         this.app.use(this.paths.categorias, categorias_1.default);
         this.app.use(this.paths.clientes, clientes_1.default);
         this.app.use(this.paths.productos, productos_1.default);
+        this.app.use(this.paths.search, search_1.default);
         this.app.use(this.paths.usuarios, usuarios_1.default);
     };
     // Levantar el servidor
