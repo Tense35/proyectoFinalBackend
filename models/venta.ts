@@ -10,17 +10,6 @@ const Venta = db.define('Venta',
         primaryKey: true,
         autoIncrement: true
     },
-    id_producto: 
-    {
-        type: DataTypes.INTEGER,
-        validate:
-        {
-            notEmpty: 
-            {
-                msg:'El id del producto es obligatorio.'
-            }
-        }
-    },
     id_cliente: 
     {
         type: DataTypes.INTEGER,
