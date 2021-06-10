@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 // Propios
 import Producto from '../models/producto';
 import { actualizarArchivo, subirArchivo } from '../helpers/subir-archivos';
+import Categoria from '../models/categoria';
 
 // Función para errores
 
@@ -23,13 +24,18 @@ const sendError = ( error: Error, res: Response, area:string ) =>
 // Obtener todos los productos de la base de datos
 export const getProductos = async( req: Request, res: Response ) => 
 {
-    let { estado = true, descuento, stock, destacado } = req.query;
+    let { estado = true, descuento, stock, destacado, categoria } = req.query;
 
     const destacar = ( destacado === 'false' )? 0 : 1;
     
     try 
     {
         let where: any = { };
+
+        if ( categoria && categoria !== 'false')
+        {
+            where.id_categoria = categoria;
+        }
         
         if ( estado !== 'false' )
         {
@@ -51,26 +57,17 @@ export const getProductos = async( req: Request, res: Response ) =>
             where.destacar = destacar;
         }
 
-        const data = await Producto.findAll({ where });
-
-        let i = 0;
-        const test = data.forEach( elemento => 
-        {
-            console.log('-----------------------------------');
-            console.log('-----------------------------------');
-            console.log('-----------------------------------');
-            const desc = elemento.getDataValue('descuento');
-            const iva = elemento.getDataValue('iva');
-            const precio = elemento.getDataValue('precio');
-            const total = precio - ((precio*desc)/100) - ((precio*iva)/100);
-
-            console.log( elemento );
-            console.log('-----------------------------------');
-            console.log('-----------------------------------');
-            console.log('-----------------------------------');
-        } )
-
-        console.log(test);
+        const [ data, total ] = await Promise.all
+        ([
+            // Data
+            await (await Producto.findAll({ where, include: { model: Categoria, attributes: ['nombre'] } })).map( ( resp: any ) => 
+            {
+                resp.dataValues.precioFinal = (resp.precio - ((resp.precio*resp.descuento)/100) + ((resp.precio*resp.iva)/100));
+                return resp;
+            }),
+            // Total
+            await Producto.count({ where })
+        ]);
 
         res.json
         ({
